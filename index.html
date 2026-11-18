@@ -1,0 +1,779 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" 
+
+
+content="#101914">
+<title>Ternak lele</title>
+<style>
+:root{
+--bg:#101914;--panel:#19251e;--panel2:#24362a;
+--green:#22c55e;--white:#f3f7f4;--muted:#aabbb0;
+--border:#304238;--red:#ef6464;--yellow:#eabf4c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:var(--bg);color:var(--white)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.sidebar{
+position:fixed;top:0;bottom:0;left:0;width:245px;
+background:#142019;border-right:1px solid var(--border);
+padding:22px 14px;overflow-y:auto;z-index:5
+}
+.logo{font-size:24px;font-weight:bold;color:var(--green);padding:10px;margin-bottom:20px}
+.logo span{color:white}
+.nav-label{font-size:10px;color:#819187;padding:15px 12px 8px}
+.nav{
+display:flex;align-items:center;gap:12px;width:100%;
+padding:12px;border:0;border-radius:9px;background:none;
+color:#c0cec4;text-align:left;margin-bottom:4px
+}
+.nav:hover,.nav.active{background:#23442e;color:#54e687}
+.main{margin-left:245px;padding:25px 30px;max-width:1600px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;gap:12px}
+.topbar h2{font-size:23px}
+.page{display:none}
+.page.active{display:block}
+.hero{
+padding:27px;border-radius:17px;
+background:linear-gradient(110deg,#19462b,#20372a);
+margin-bottom:22px;display:flex;justify-content:space-between;
+align-items:center;gap:15px;flex-wrap:wrap
+}
+.hero h1{font-size:27px;margin-bottom:10px}
+.hero p{color:#d0e3d5;line-height:1.6}
+.hero-icon{font-size:65px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:22px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:19px;min-width:0}
+.card h3{font-size:15px;margin-bottom:15px}
+.card small,.muted{color:var(--muted)}
+.stat-number,.metric{font-size:26px;color:var(--green);font-weight:bold;margin:12px 0}
+.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-bottom:18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+label{display:block;color:var(--muted);font-size:12px;margin:12px 0 6px}
+input,select{
+width:100%;padding:11px;background:#101914;color:white;
+border:1px solid var(--border);border-radius:8px;outline:none
+}
+input:focus,select:focus{border-color:var(--green)}
+.btn{padding:10px 15px;border:0;border-radius:8px;background:var(--green);color:#07170b;font-weight:bold;margin-top:12px}
+.btn.secondary{background:#304638;color:white}
+.btn.danger{background:#682f32;color:white}
+.btn.small{padding:7px 10px;font-size:12px;margin:0}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:450px}
+th,td{padding:12px 9px;text-align:left;border-bottom:1px solid var(--border);font-size:12px}
+th{color:var(--green)}
+td{color:#d7e1da}
+.empty{text-align:center;padding:25px;color:var(--muted)}
+.tag{padding:5px 8px;border-radius:20px;background:#24442e;color:#66e28d;font-size:11px}
+.notice{padding:12px;background:#203b29;border-radius:8px;color:#bceac9;font-size:12px;line-height:1.6;margin:12px 0}
+canvas{width:100%;height:240px;display:block}
+.progress{height:8px;background:#34443a;border-radius:10px;overflow:hidden;margin-top:10px}
+.progress div{height:100%;background:var(--green)}
+.check-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)}
+.check-row input{width:auto;accent-color:var(--green)}
+.check-row span{font-size:13px}
+.actions{display:flex;gap:5px;flex-wrap:wrap}
+footer{text-align:center;color:#728479;padding:30px;font-size:12px}
+@media(max-width:1050px){.stats{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+@media(max-width:700px){
+.sidebar{width:65px;padding:15px 7px}
+.logo{font-size:0;text-align:center;padding:10px 0}
+.logo:first-letter{font-size:24px}
+.nav{justify-content:center;font-size:0;padding:14px 4px}
+.nav .ico{font-size:19px}
+.nav-label{font-size:0;padding:10px}
+.main{margin-left:65px;padding:18px 12px}
+.topbar h2{font-size:18px}
+.hero h1{font-size:22px}
+.hero-icon{font-size:40px}
+.grid3{grid-template-columns:1fr}
+}
+@media(max-width:430px){
+.stats{grid-template-columns:1fr 1fr;gap:8px}
+.card{padding:13px}
+.stat-number,.metric{font-size:21px}
+.form-grid{grid-template-columns:1fr}
+}
+@media print{
+body{background:white;color:black}
+.sidebar,.topbar,button{display:none!important}
+.main{margin:0;padding:0}
+.page{display:none!important}
+#laporan{display:block!important}
+.card{background:white;color:black;border:1px solid #aaa}
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+<div class="logo">🐟 Ternak<span>Lele</span></div>
+<div class="nav-label">MENU UTAMA</div>
+<button class="nav active" data-page="dashboard"><span class="ico">📊</span> Dashboard</button>
+<button class="nav" data-page="kolam"><span class="ico">🏞️</span> Data Kolam</button>
+<button class="nav" data-page="pakan"><span class="ico">🍽️</span> Jadwal Pakan</button>
+<button class="nav" data-page="air"><span class="ico">💧</span> Monitoring Air</button>
+<button class="nav" data-page="pertumbuhan"><span class="ico">📈</span> Pertumbuhan</button>
+<button class="nav" data-page="panen"><span class="ico">🐟</span> Manajemen Panen</button>
+<div class="nav-label">KEUANGAN</div>
+<button class="nav" data-page="keuangan"><span class="ico">💰</span> Keuangan</button>
+<button class="nav" data-page="fcr"><span class="ico">🧮</span> Kalkulator FCR</button>
+<div class="nav-label">LAINNYA</div>
+<button class="nav" data-page="grafik"><span class="ico">📉</span> Grafik</button>
+<button class="nav" data-page="laporan"><span class="ico">📄</span> Laporan PDF</button>
+<button class="nav" data-page="backup"><span class="ico">💾</span> Backup Data</button>
+<button class="nav" data-page="profil"><span class="ico">👤</span> Profil</button>
+</aside>
+
+<main class="main">
+<div class="topbar">
+<div>
+<h2 id="pageTitle">Dashboard</h2>
+<small class="muted" id="today"></small>
+</div>
+<div class="muted">🐟 Ternak lele</div>
+</div>
+
+<!-- DASHBOARD -->
+<section class="page active" id="dashboard">
+<div class="hero">
+<div>
+<h1>Dashboard Peternakan Lele</h1>
+<p>Kelola kolam, pantau pertumbuhan ikan,<br>dan tingkatkan produktivitas ternak lele.</p>
+</div>
+<div class="hero-icon">🐟</div>
+</div>
+<div class="stats">
+<div class="card"><small>🏞️ Total Kolam</small><div class="stat-number" id="sKolam">0</div><small>Kolam terdaftar</small></div>
+<div class="card"><small>🐟 Populasi Ikan</small><div class="stat-number" id="sIkan">0</div><small>Estimasi ekor</small></div>
+<div class="card"><small>🍽️ Total Pakan</small><div class="stat-number" id="sPakan">0</div><small>Kilogram</small></div>
+<div class="card"><small>💰 Keuntungan</small><div class="stat-number" id="sUntung">Rp0</div><small>Penjualan - pengeluaran</small></div>
+</div>
+<div class="grid2">
+<div class="card"><h3>📈 Grafik Pertumbuhan</h3><canvas id="dashChart"></canvas></div>
+<div class="card">
+<h3>📋 Informasi Peternakan</h3>
+<p class="muted">Jumlah kolam</p><div class="metric" id="infoKolam">0</div>
+<p class="muted">Hasil panen</p><div class="metric" id="infoPanen">0 Kg</div>
+<p class="muted">Pengeluaran</p><div class="metric" id="infoBiaya">Rp0</div>
+</div>
+</div>
+<div class="card"><h3>⚡ Aktivitas Terbaru</h3><div id="aktivitas" class="muted">Belum ada aktivitas.</div></div>
+</section>
+
+<!-- KOLAM -->
+<section class="page" id="kolam">
+<div class="grid2">
+<div class="card">
+<h3>➕ Tambah Kolam</h3>
+<form id="kolamForm">
+<label>Nama Kolam</label><input id="kNama" required placeholder="Kolam A">
+<div class="form-grid">
+<div><label>Jumlah Ikan</label><input id="kIkan" type="number" min="1" required></div>
+<div><label>Luas Kolam (CM²)</label><input id="kUkuran" type="number" min="1" required></div>
+</div>
+<label>Tanggal mulai</label><input id="kTanggal" type="date" required>
+<button class="btn">Simpan Kolam</button>
+</form>
+</div>
+<div class="card">
+<h3>Ringkasan Kolam</h3>
+<div class="metric" id="kolamJumlah">0</div><p class="muted">Kolam aktif</p>
+<div class="metric" id="ikanJumlah">0</div><p class="muted">Total populasi</p>
+</div>
+</div>
+<div class="card"><h3>Daftar Kolam</h3><div class="table-wrap"><table>
+<thead><tr><th>Nama</th><th>Populasi</th><th>Luas</th><th>Tanggal</th><th>Aksi</th></tr></thead>
+<tbody id="kolamTable"></tbody></table></div></div>
+</section>
+
+<!-- PAKAN -->
+<section class="page" id="pakan">
+<div class="grid2">
+<div class="card">
+<h3>🍽️ Catat Pemberian Pakan</h3>
+<form id="pakanForm">
+<label>Pilih Kolam</label><select id="pKolam" required></select>
+<div class="form-grid">
+<div><label>Jumlah (kg)</label><input id="pJumlah" type="number" min=".1" step=".1" required></div>
+<div><label>Waktu</label><select id="pWaktu"><option>Pagi</option><option>Siang</option><option>Sore</option></select></div>
+</div>
+<label>Tanggal</label><input id="pTanggal" type="date" required>
+<button class="btn">Simpan Pakan</button>
+</form>
+</div>
+<div class="card">
+<h3>⏰ Checklist Jadwal Harian</h3>
+<div id="jadwalChecklist"></div>
+<p class="muted" style="margin-top:12px">Checklist tersimpan berdasarkan tanggal.</p>
+</div>
+</div>
+<div class="card"><h3>Riwayat Pakan</h3><div class="table-wrap"><table>
+<thead><tr><th>Tanggal</th><th>Kolam</th><th>Waktu</th><th>Jumlah</th><th>Aksi</th></tr></thead>
+<tbody id="pakanTable"></tbody></table></div></div>
+</section>
+
+<!-- AIR -->
+<section class="page" id="air">
+<div class="grid2">
+<div class="card">
+<h3>💧 Kualitas Air</h3>
+<form id="airForm">
+<label>Kolam</label><select id="aKolam" required></select>
+<div class="form-grid">
+<div><label>Suhu (°C)</label><input id="aSuhu" type="number" step=".1" required></div>
+<div><label>pH Air</label><input id="aPh" type="number" step=".1" min="0" max="14" required></div>
+</div>
+<label>Oksigen (mg/L)</label><input id="aOksigen" type="number" step=".1" min="0" required>
+<label>Kondisi</label><select id="aKondisi"><option>Jernih</option><option>Agak keruh</option><option>Keruh</option><option>Berbau</option></select>
+<label>Tanggal</label><input id="aTanggal" type="date" required>
+<button class="btn">Simpan Monitoring</button>
+</form>
+</div>
+<div class="card">
+<h3>ℹ️ Panduan Pemantauan</h3>
+<div class="notice">Suhu 27–30°C merupakan acuan umum pemantauan.</div>
+<div class="notice">pH sekitar 6,5–8 merupakan rentang acuan umum.</div>
+<div class="notice">Oksigen terlarut sekitar 5 mg/L atau lebih merupakan target yang baik.</div>
+<p class="muted">Gunakan alat ukur untuk mengetahui nilai aktual dan perhatikan kondisi ikan.</p>
+</div>
+</div>
+<div class="card"><h3>Riwayat Air</h3><div class="table-wrap"><table>
+<thead><tr><th>Tanggal</th><th>Kolam</th><th>Suhu</th><th>pH</th><th>Oksigen</th><th>Kondisi</th><th>Aksi</th></tr></thead>
+<tbody id="airTable"></tbody></table></div></div>
+</section>
+
+<!-- PERTUMBUHAN -->
+<section class="page" id="pertumbuhan">
+<div class="grid2">
+<div class="card">
+<h3>📈 Catat Pertumbuhan</h3>
+<form id="growthForm">
+<label>Kolam</label><select id="gKolam" required></select>
+<div class="form-grid">
+<div><label>Berat rata-rata (gram)</label><input id="gBerat" type="number" min=".1" step=".1" required></div>
+<div><label>Panjang rata-rata (cm)</label><input id="gPanjang" type="number" min=".1" step=".1" required></div>
+</div>
+<label>Tanggal</label><input id="gTanggal" type="date" required>
+<button class="btn">Simpan Pertumbuhan</button>
+</form>
+</div>
+<div class="card"><h3>Berat Terakhir</h3><div class="metric" id="gTerakhir">0 gram</div><p class="muted">Berdasarkan catatan pengukuran terbaru.</p></div>
+</div>
+<div class="card"><h3>Riwayat Pertumbuhan</h3><div class="table-wrap"><table>
+<thead><tr><th>Tanggal</th><th>Kolam</th><th>Berat</th><th>Panjang</th><th>Aksi</th></tr></thead>
+<tbody id="growthTable"></tbody></table></div></div>
+</section>
+
+<!-- PANEN -->
+<section class="page" id="panen">
+<div class="grid2">
+<div class="card">
+<h3>🐟 Catat Panen</h3>
+<form id="harvestForm">
+<label>Kolam</label><select id="hKolam" required></select>
+<div class="form-grid">
+<div><label>Berat (kg)</label><input id="hKg" type="number" min=".1" step=".1" required></div>
+<div><label>Harga per kg (Rp)</label><input id="hHarga" type="number" min="0" required></div>
+</div>
+<label>Jumlah ikan (ekor)</label><input id="hEkor" type="number" min="0" required>
+<label>Tanggal</label><input id="hTanggal" type="date" required>
+<button class="btn">Simpan Panen</button>
+</form>
+</div>
+<div class="card"><h3>Ringkasan Panen</h3><div class="metric" id="totalKg">0 Kg</div><p class="muted">Total panen</p><div class="metric" id="totalJual">Rp0</div><p class="muted">Hasil penjualan</p></div>
+</div>
+<div class="card"><h3>Riwayat Panen</h3><div class="table-wrap"><table>
+<thead><tr><th>Tanggal</th><th>Kolam</th><th>Berat</th><th>Ekor</th><th>Penjualan</th><th>Aksi</th></tr></thead>
+<tbody id="harvestTable"></tbody></table></div></div>
+</section>
+
+<!-- KEUANGAN -->
+<section class="page" id="keuangan">
+<div class="grid2">
+<div class="card">
+<h3>💸 Tambah Pengeluaran</h3>
+<form id="expenseForm">
+<label>Keterangan</label><input id="eNama" required placeholder="Pembelian pakan">
+<div class="form-grid">
+<div><label>Kategori</label><select id="eKategori"><option>Pakan</option><option>Benih</option><option>Listrik</option><option>Perawatan</option><option>Peralatan</option><option>Lainnya</option></select></div>
+<div><label>Jumlah (Rp)</label><input id="eJumlah" type="number" min="1" required></div>
+</div>
+<label>Tanggal</label><input id="eTanggal" type="date" required>
+<button class="btn">Simpan Pengeluaran</button>
+</form>
+</div>
+<div class="card">
+<h3>Ringkasan Keuangan</h3>
+<p class="muted">Pemasukan</p><div class="metric" id="fMasuk">Rp0</div>
+<p class="muted">Pengeluaran</p><div class="metric" id="fKeluar">Rp0</div>
+<p class="muted">Selisih</p><div class="metric" id="fSaldo">Rp0</div>
+</div>
+</div>
+<div class="card"><h3>Daftar Pengeluaran</h3><div class="table-wrap"><table>
+<thead><tr><th>Tanggal</th><th>Keterangan</th><th>Kategori</th><th>Jumlah</th><th>Aksi</th></tr></thead>
+<tbody id="expenseTable"></tbody></table></div></div>
+</section>
+
+<!-- FCR -->
+<section class="page" id="fcr">
+<div class="grid2">
+<div class="card">
+<h3>🧮 Kalkulator FCR</h3>
+<label>Total pakan (kg)</label><input id="fcrPakan" type="number" min="0" step=".1">
+<label>Pertambahan biomassa (kg)</label><input id="fcrBiomassa" type="number" min=".1" step=".1">
+<button class="btn" onclick="hitungFCR()">Hitung FCR</button>
+</div>
+<div class="card"><h3>Hasil FCR</h3><div class="metric" id="fcrHasil">0.00</div><p class="muted" id="fcrKeterangan">Masukkan data terlebih dahulu.</p><div class="notice">FCR = total pakan ÷ pertambahan biomassa. Gunakan periode pengukuran yang sama.</div></div>
+</div>
+</section>
+
+<!-- GRAFIK -->
+<section class="page" id="grafik">
+<div class="card"><h3>📊 Grafik Berat Ikan</h3><p class="muted">Data pengukuran pertumbuhan ikan.</p><canvas id="growthChart"></canvas></div>
+<div class="grid2" style="margin-top:16px">
+<div class="card"><h3>Total Pakan</h3><div class="metric" id="graphPakan">0 Kg</div></div>
+<div class="card"><h3>Total Panen</h3><div class="metric" id="graphPanen">0 Kg</div></div>
+</div>
+</section>
+
+<!-- LAPORAN -->
+<section class="page" id="laporan">
+<div class="card">
+<h3>📄 Laporan Peternakan</h3>
+<p class="muted">Cetak laporan dan pilih Simpan sebagai PDF.</p>
+<div class="notice">Laporan memuat profil, data kolam, pakan, panen, dan keuangan.</div>
+<button class="btn" onclick="buatLaporan()">🖨️ Cetak / Simpan PDF</button>
+<div id="reportPreview" style="margin-top:20px"></div>
+</div>
+</section>
+
+<!-- BACKUP -->
+<section class="page" id="backup">
+<div class="grid2">
+<div class="card">
+<h3>💾 Backup Data</h3>
+<p class="muted">Unduh seluruh data peternakan dalam format JSON.</p>
+<button class="btn" onclick="backup()">⬇️ Download Backup</button>
+</div>
+<div class="card">
+<h3>📂 Pulihkan Data</h3>
+<p class="muted">Pilih file backup JSON.</p>
+<label>Pilih file</label><input type="file" id="restoreFile" accept=".json,application/json">
+<button class="btn secondary" onclick="restore()">Pulihkan Backup</button>
+</div>
+</div>
+<div class="notice">Lakukan backup secara berkala agar data tidak hilang jika browser dibersihkan.</div>
+<div class="card"><h3>⚠️ Reset Data</h3><p class="muted">Hapus seluruh data peternakan.</p><button class="btn danger" onclick="resetData()">Hapus Semua Data</button></div>
+</section>
+
+<!-- PROFIL -->
+<section class="page" id="profil">
+<div class="card" style="max-width:600px">
+<h3>👤 Profil Peternak</h3>
+<label>Nama Peternak</label><input id="profileName">
+<label>Nama Usaha</label><input id="profileFarm">
+<label>Lokasi</label><input id="profileLocation">
+<button class="btn" onclick="saveProfile()">Simpan Profil</button>
+</div>
+</section>
+
+<footer>LeleFarm PRO © 2026 — Sistem Manajemen Budidaya Lele</footer>
+</main>
+
+<script>
+// ===============================
+// DATABASE LOKAL
+// ===============================
+const KEY='lelefarm_pro_v2';
+const fresh=()=>({
+kolam:[],pakan:[],air:[],growth:[],panen:[],expenses:[],
+checklist:{},profile:{name:'Peternak',farm:'LeleFarm',location:''}
+});
+let db=fresh();
+try{
+const saved=JSON.parse(localStorage.getItem(KEY));
+if(saved&&typeof saved==='object') db={...fresh(),...saved};
+}catch(e){}
+const $=id=>document.getElementById(id);
+const rupiah=n=>'Rp'+Number(n||0).toLocaleString('id-ID');
+const number=n=>Number(n||0).toLocaleString('id-ID');
+const today=()=>new Date().toLocaleDateString('en-CA');
+const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+function totalPakan(){return db.pakan.reduce((s,x)=>s+x.jumlah,0)}
+function totalPanen(){return db.panen.reduce((s,x)=>s+x.kg,0)}
+function pemasukan(){return db.panen.reduce((s,x)=>s+x.kg*x.harga,0)}
+function pengeluaran(){return db.expenses.reduce((s,x)=>s+x.jumlah,0)}
+function populasi(){return db.kolam.reduce((s,x)=>s+x.ikan,0)}
+function aktivitas(msg){
+const el=$('aktivitas');
+el.innerHTML=`<div style="padding:9px 0;border-bottom:1px solid var(--border)">${escapeHTML(msg)} • ${new Date().toLocaleString('id-ID')}</div>`+el.innerHTML;
+}
+function rowEmpty(cols,msg='Belum ada data.'){
+return `<tr><td colspan="${cols}" class="empty">${msg}</td></tr>`;
+}
+function options(id){
+$(id).innerHTML='<option value="">Pilih kolam</option>'+
+db.kolam.map(k=>`<option value="${k.id}">${escapeHTML(k.nama)}</option>`).join('');
+}
+function pondName(id){return db.kolam.find(k=>k.id===id)?.nama||'Kolam dihapus'}
+function delButton(type,id){
+return `<button class="btn danger small" onclick="hapus('${type}','${id}')">Hapus</button>`;
+}
+
+// ===============================
+// NAVIGASI
+// ===============================
+document.querySelectorAll('.nav[data-page]').forEach(btn=>{
+btn.addEventListener('click',()=>{
+document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));
+document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+btn.classList.add('active');
+$(btn.dataset.page).classList.add('active');
+$('pageTitle').textContent=btn.textContent.trim();
+if(btn.dataset.page==='grafik') drawChart('growthChart');
+if(btn.dataset.page==='dashboard') drawChart('dashChart');
+if(btn.dataset.page==='laporan') previewReport();
+});
+});
+$('today').textContent=new Date().toLocaleDateString('id-ID',{dateStyle:'full'});
+
+// ===============================
+// KOLAM
+// ===============================
+$('kolamForm').onsubmit=e=>{
+e.preventDefault();
+db.kolam.push({
+id:crypto.randomUUID(),nama:$('kNama').value.trim(),
+ikan:+$('kIkan').value,ukuran:+$('kUkuran').value,
+tanggal:$('kTanggal').value
+});
+save();e.target.reset();aktivitas('Kolam baru ditambahkan');render();
+};
+
+// ===============================
+// PAKAN DAN CHECKLIST
+// ===============================
+$('pakanForm').onsubmit=e=>{
+e.preventDefault();
+if(!db.kolam.some(k=>k.id===$('pKolam').value))return alert('Pilih kolam terlebih dahulu.');
+db.pakan.push({
+id:crypto.randomUUID(),kolam:$('pKolam').value,
+jumlah:+$('pJumlah').value,waktu:$('pWaktu').value,
+tanggal:$('pTanggal').value
+});
+save();e.target.reset();$('pTanggal').value=today();
+aktivitas('Pemberian pakan dicatat');render();
+};
+function renderChecklist(){
+let date=today();
+let list=['Pagi','Siang','Sore'];
+$('jadwalChecklist').innerHTML=list.map(t=>{
+let key=date+'_'+t;
+return `<label class="check-row"><input type="checkbox" ${db.checklist[key]?'checked':''} onchange="checkPakan('${key}',this.checked)"><span>Pemberian pakan ${t}</span></label>`;
+}).join('');
+}
+function checkPakan(key,val){db.checklist[key]=val;save()}
+
+// ===============================
+// MONITORING AIR
+// ===============================
+$('airForm').onsubmit=e=>{
+e.preventDefault();
+if(!db.kolam.some(k=>k.id===$('aKolam').value))return alert('Pilih kolam.');
+db.air.push({
+id:crypto.randomUUID(),kolam:$('aKolam').value,
+suhu:+$('aSuhu').value,ph:+$('aPh').value,
+oksigen:+$('aOksigen').value,kondisi:$('aKondisi').value,
+tanggal:$('aTanggal').value
+});
+save();e.target.reset();$('aTanggal').value=today();
+aktivitas('Monitoring kualitas air dicatat');render();
+};
+
+// ===============================
+// PERTUMBUHAN
+// ===============================
+$('growthForm').onsubmit=e=>{
+e.preventDefault();
+if(!db.kolam.some(k=>k.id===$('gKolam').value))return alert('Pilih kolam.');
+db.growth.push({
+id:crypto.randomUUID(),kolam:$('gKolam').value,
+berat:+$('gBerat').value,panjang:+$('gPanjang').value,
+tanggal:$('gTanggal').value
+});
+save();e.target.reset();$('gTanggal').value=today();
+aktivitas('Data pertumbuhan dicatat');render();
+};
+
+// ===============================
+// PANEN
+// ===============================
+$('harvestForm').onsubmit=e=>{
+e.preventDefault();
+let k=db.kolam.find(x=>x.id===$('hKolam').value);
+let ekor=+$('hEkor').value;
+if(!k)return alert('Pilih kolam.');
+if(ekor>k.ikan)return alert('Jumlah panen melebihi populasi kolam.');
+db.panen.push({
+id:crypto.randomUUID(),kolam:k.id,kg:+$('hKg').value,
+harga:+$('hHarga').value,ekor,tanggal:$('hTanggal').value
+});
+k.ikan-=ekor;
+save();e.target.reset();$('hTanggal').value=today();
+aktivitas('Hasil panen berhasil dicatat');render();
+};
+
+// ===============================
+// KEUANGAN
+// ===============================
+$('expenseForm').onsubmit=e=>{
+e.preventDefault();
+db.expenses.push({
+id:crypto.randomUUID(),nama:$('eNama').value.trim(),
+kategori:$('eKategori').value,jumlah:+$('eJumlah').value,
+tanggal:$('eTanggal').value
+});
+save();e.target.reset();$('eTanggal').value=today();
+aktivitas('Pengeluaran dicatat');render();
+};
+
+// ===============================
+// HAPUS DATA
+// ===============================
+function hapus(type,id){
+if(!confirm('Yakin ingin menghapus data ini?'))return;
+let key={kolam:'kolam',pakan:'pakan',air:'air',growth:'growth',panen:'panen',expenses:'expenses'}[type];
+if(!key)return;
+if(type==='kolam'){
+if(db.pakan.some(x=>x.kolam===id)||db.air.some(x=>x.kolam===id)||db.growth.some(x=>x.kolam===id)||db.panen.some(x=>x.kolam===id)){
+if(!confirm('Data kolam ini memiliki riwayat. Hapus kolam saja? Riwayat akan tetap tersimpan.'))return;
+}
+}
+db[key]=db[key].filter(x=>x.id!==id);
+save();aktivitas('Data dihapus');render();
+}
+
+// ===============================
+// FCR
+// ===============================
+function hitungFCR(){
+let p=+$('fcrPakan').value,b=+$('fcrBiomassa').value;
+if(!Number.isFinite(p)||!Number.isFinite(b)||p<0||b<=0){
+alert('Masukkan pakan dan biomassa dengan benar.');return;
+}
+let f=p/b;
+$('fcrHasil').textContent=f.toFixed(2);
+$('fcrKeterangan').textContent='Perbandingan pakan dengan pertambahan biomassa: '+f.toFixed(2);
+}
+
+// ===============================
+// GRAFIK CANVAS
+// ===============================
+function drawChart(id){
+let c=$(id);if(!c)return;
+let ctx=c.getContext('2d');
+let w=c.clientWidth||400,h=240;
+let dpr=window.devicePixelRatio||1;
+c.width=w*dpr;c.height=h*dpr;
+ctx.setTransform(dpr,0,0,dpr,0,0);
+ctx.clearRect(0,0,w,h);
+let data=[...db.growth].sort((a,b)=>a.tanggal.localeCompare(b.tanggal));
+if(!data.length){
+ctx.fillStyle='#aabbb0';ctx.font='13px Arial';
+ctx.fillText('Belum ada data pertumbuhan',15,40);return;
+}
+let values=data.map(x=>x.berat),max=Math.max(...values)*1.2||1;
+let left=38,right=12,top=20,bottom=35;
+let cw=w-left-right,ch=h-top-bottom;
+ctx.strokeStyle='#34483a';ctx.lineWidth=1;
+for(let i=0;i<5;i++){
+let y=top+ch*i/4;
+ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();
+ctx.fillStyle='#aabbb0';ctx.font='10px Arial';
+ctx.fillText((max*(1-i/4)).toFixed(0),3,y+3);
+}
+let pts=data.map((d,i)=>({
+x:left+(data.length===1?cw/2:i*cw/(data.length-1)),
+y:top+ch-(d.berat/max)*ch
+}));
+ctx.beginPath();
+pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
+ctx.strokeStyle='#22c55e';ctx.lineWidth=3;ctx.stroke();
+pts.forEach((p,i)=>{
+ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);
+ctx.fillStyle='#22c55e';ctx.fill();
+ctx.fillStyle='#aabbb0';ctx.font='9px Arial';
+ctx.fillText(data[i].tanggal.slice(5),p.x-15,h-12);
+});
+}
+window.addEventListener('resize',()=>{
+if($('dashboard').classList.contains('active'))drawChart('dashChart');
+if($('grafik').classList.contains('active'))drawChart('growthChart');
+});
+
+// ===============================
+// LAPORAN
+// ===============================
+function reportHTML(){
+return `
+<h2 style="color:#16813d;margin-bottom:8px">LAPORAN LELEFARM PRO</h2>
+<p>Peternak: ${escapeHTML(db.profile.name)}</p>
+<p>Usaha: ${escapeHTML(db.profile.farm)}</p>
+<p>Lokasi: ${escapeHTML(db.profile.location)}</p>
+<p>Tanggal laporan: ${new Date().toLocaleDateString('id-ID')}</p>
+<hr style="margin:15px 0">
+<h3>Statistik Peternakan</h3>
+<p>Total kolam: ${db.kolam.length}</p>
+<p>Total populasi saat ini: ${number(populasi())} ekor</p>
+<p>Total pakan: ${totalPakan().toFixed(1)} kg</p>
+<p>Total panen: ${totalPanen().toFixed(1)} kg</p>
+<p>Penjualan: ${rupiah(pemasukan())}</p>
+<p>Pengeluaran: ${rupiah(pengeluaran())}</p>
+<p>Selisih: ${rupiah(pemasukan()-pengeluaran())}</p>
+<hr style="margin:15px 0">
+<h3>Data Kolam</h3>
+${db.kolam.map(k=>`<p>${escapeHTML(k.nama)} — ${number(k.ikan)} ekor — ${k.ukuran} m²</p>`).join('')||'<p>Belum ada data kolam.</p>'}
+<hr style="margin:15px 0">
+<h3>Riwayat Panen</h3>
+${db.panen.map(x=>`<p>${escapeHTML(x.tanggal)} — ${escapeHTML(pondName(x.kolam))} — ${x.kg} kg — ${rupiah(x.kg*x.harga)}</p>`).join('')||'<p>Belum ada data panen.</p>'}
+<hr style="margin:15px 0">
+<h3>Pengeluaran</h3>
+${db.expenses.map(x=>`<p>${escapeHTML(x.tanggal)} — ${escapeHTML(x.nama)} — ${rupiah(x.jumlah)}</p>`).join('')||'<p>Belum ada pengeluaran.</p>'}
+`;
+}
+function previewReport(){$('reportPreview').innerHTML=reportHTML()}
+function buatLaporan(){
+previewReport();
+let win=window.open('','_blank');
+if(!win){alert('Izinkan pop-up browser untuk membuat PDF.');return}
+win.document.write(`<!DOCTYPE html><html><head><title>Laporan LeleFarm</title><style>body{font-family:Arial;padding:35px;line-height:1.7;color:#222}h2,h3{margin:15px 0}p{font-size:13px}</style></head><body>${reportHTML()}<script>window.onload=()=>window.print()<\/script></body></html>`);
+win.document.close();
+}
+
+// ===============================
+// BACKUP DAN RESTORE
+// ===============================
+function backup(){
+let blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
+let url=URL.createObjectURL(blob);
+let a=document.createElement('a');
+a.href=url;a.download='backup-lelefarm-'+today()+'.json';
+a.click();URL.revokeObjectURL(url);
+}
+function restore(){
+let file=$('restoreFile').files[0];
+if(!file)return alert('Pilih file backup dahulu.');
+let reader=new FileReader();
+reader.onload=()=>{
+try{
+let data=JSON.parse(reader.result);
+let required=['kolam','pakan','air','growth','panen','expenses'];
+if(!data||!required.every(k=>Array.isArray(data[k])))throw Error();
+if(!confirm('Pulihkan backup? Data saat ini akan diganti.'))return;
+db={...fresh(),...data};
+save();render();alert('Backup berhasil dipulihkan.');
+}catch(e){alert('File backup tidak valid.')}
+};
+reader.readAsText(file);
+}
+function resetData(){
+if(!confirm('Hapus seluruh data LeleFarm secara permanen dari browser ini?'))return;
+if(!confirm('Konfirmasi sekali lagi untuk menghapus semua data?'))return;
+db=fresh();save();render();alert('Data berhasil direset.');
+}
+
+// ===============================
+// PROFIL
+// ===============================
+function saveProfile(){
+db.profile={
+name:$('profileName').value.trim()||'Peternak',
+farm:$('profileFarm').value.trim()||'LeleFarm',
+location:$('profileLocation').value.trim()
+};
+save();aktivitas('Profil peternak diperbarui');alert('Profil tersimpan.');
+}
+
+// ===============================
+// RENDER SEMUA DATA
+// ===============================
+function render(){
+options('pKolam');options('aKolam');options('gKolam');options('hKolam');
+
+$('kolamTable').innerHTML=db.kolam.map(k=>`
+<tr><td>${escapeHTML(k.nama)}</td><td>${number(k.ikan)}</td>
+<td>${k.ukuran} m²</td><td>${escapeHTML(k.tanggal)}</td>
+<td>${delButton('kolam',k.id)}</td></tr>`).join('')||rowEmpty(5);
+
+$('pakanTable').innerHTML=db.pakan.map(x=>`
+<tr><td>${escapeHTML(x.tanggal)}</td><td>${escapeHTML(pondName(x.kolam))}</td>
+<td>${escapeHTML(x.waktu)}</td><td>${x.jumlah} kg</td>
+<td>${delButton('pakan',x.id)}</td></tr>`).join('')||rowEmpty(5);
+
+$('airTable').innerHTML=db.air.map(x=>`
+<tr><td>${escapeHTML(x.tanggal)}</td><td>${escapeHTML(pondName(x.kolam))}</td>
+<td>${x.suhu}°C</td><td>${x.ph}</td><td>${x.oksigen}</td>
+<td>${escapeHTML(x.kondisi)}</td><td>${delButton('air',x.id)}</td></tr>`).join('')||rowEmpty(7);
+
+$('growthTable').innerHTML=db.growth.map(x=>`
+<tr><td>${escapeHTML(x.tanggal)}</td><td>${escapeHTML(pondName(x.kolam))}</td>
+<td>${x.berat} g</td><td>${x.panjang} cm</td>
+<td>${delButton('growth',x.id)}</td></tr>`).join('')||rowEmpty(5);
+
+$('harvestTable').innerHTML=db.panen.map(x=>`
+<tr><td>${escapeHTML(x.tanggal)}</td><td>${escapeHTML(pondName(x.kolam))}</td>
+<td>${x.kg} kg</td><td>${x.ekor}</td><td>${rupiah(x.kg*x.harga)}</td>
+<td>${delButton('panen',x.id)}</td></tr>`).join('')||rowEmpty(6);
+
+$('expenseTable').innerHTML=db.expenses.map(x=>`
+<tr><td>${escapeHTML(x.tanggal)}</td><td>${escapeHTML(x.nama)}</td>
+<td>${escapeHTML(x.kategori)}</td><td>${rupiah(x.jumlah)}</td>
+<td>${delButton('expenses',x.id)}</td></tr>`).join('')||rowEmpty(5);
+
+let ikan=populasi(),p=totalPakan(),panen=totalPanen();
+let masuk=pemasukan(),keluar=pengeluaran();
+$('sKolam').textContent=db.kolam.length;
+$('sIkan').textContent=number(ikan);
+$('sPakan').textContent=p.toFixed(1);
+$('sUntung').textContent=rupiah(masuk-keluar);
+$('infoKolam').textContent=db.kolam.length;
+$('infoPanen').textContent=panen.toFixed(1)+' Kg';
+$('infoBiaya').textContent=rupiah(keluar);
+$('kolamJumlah').textContent=db.kolam.length;
+$('ikanJumlah').textContent=number(ikan);
+$('totalKg').textContent=panen.toFixed(1)+' Kg';
+$('totalJual').textContent=rupiah(masuk);
+$('fMasuk').textContent=rupiah(masuk);
+$('fKeluar').textContent=rupiah(keluar);
+$('fSaldo').textContent=rupiah(masuk-keluar);
+$('gTerakhir').textContent=db.growth.length?
+db.growth[db.growth.length-1].berat+' gram':'0 gram';
+$('graphPakan').textContent=p.toFixed(1)+' Kg';
+$('graphPanen').textContent=panen.toFixed(1)+' Kg';
+$('profileName').value=db.profile.name||'';
+$('profileFarm').value=db.profile.farm||'';
+$('profileLocation').value=db.profile.location||'';
+renderChecklist();
+drawChart('dashChart');
+if($('grafik').classList.contains('active'))drawChart('growthChart');
+}
+
+// ===============================
+// MULAI WEBSITE
+// ===============================
+['kTanggal','pTanggal','aTanggal','gTanggal','hTanggal','eTanggal'].forEach(id=>{
+$(id).value=today();
+});
+render();
+</script>
+</body>
+</html>
